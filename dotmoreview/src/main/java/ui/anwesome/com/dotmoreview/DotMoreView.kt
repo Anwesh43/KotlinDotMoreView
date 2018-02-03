@@ -6,7 +6,9 @@ package ui.anwesome.com.dotmoreview
 import android.view.*
 import android.content.*
 import android.graphics.*
-class DotMoreView(ctx:Context):View(ctx) {
+import java.util.concurrent.ConcurrentLinkedQueue
+
+class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
@@ -60,4 +62,52 @@ class DotMoreView(ctx:Context):View(ctx) {
             cb(j)
         }
     }
+    data class DotContainer(var w:Float,var h:Float,var n:Int) {
+        val dots:ConcurrentLinkedQueue<Dot> = ConcurrentLinkedQueue()
+        val state = DotContainerState(n)
+        init {
+            for(i in 0..n) {
+                dots.add(Dot(i+1))
+            }
+        }
+        fun update(stopcb:(Float)->Unit) {
+            state.executeCb {
+                dots?.at(it)?.update(stopcb)
+            }
+        }
+        fun startUpdating(startcb:()->Unit) {
+            state.executeCb {
+                dots?.at(it)?.startUpdating(startcb)
+            }
+        }
+        fun draw(canvas:Canvas,paint:Paint) {
+            if(n > 0) {
+                val gap = (w/2)/(n+1)
+                paint.color = Color.parseColor("#4527A0")
+                canvas.save()
+                canvas.translate(w/2,h/2)
+                for(p in 0..1) {
+                    canvas.save()
+                    canvas.scale(p*2-1f,1f)
+                    state.executeCb { j ->
+                        for (i in 0..j) {
+                            dots.at(i)?.draw(canvas, paint, gap, 0f)
+                        }
+                    }
+                    canvas.restore()
+                }
+                canvas.restore()
+            }
+        }
+    }
+}
+fun ConcurrentLinkedQueue<DotMoreView.Dot>.at(i:Int):DotMoreView.Dot? {
+    var j = 0
+    forEach {
+        if(j == i) {
+            return it
+        }
+        j++
+    }
+    return null
 }
