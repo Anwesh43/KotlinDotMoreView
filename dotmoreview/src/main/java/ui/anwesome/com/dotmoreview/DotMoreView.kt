@@ -75,7 +75,10 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
         }
         fun update(stopcb:(Float)->Unit) {
             state.executeCb {
-                dots?.at(it)?.update(stopcb)
+                dots?.at(it)?.update {
+                    state.incrementCounter()
+                    stopcb(it)
+                }
             }
         }
         fun startUpdating(startcb:()->Unit) {
