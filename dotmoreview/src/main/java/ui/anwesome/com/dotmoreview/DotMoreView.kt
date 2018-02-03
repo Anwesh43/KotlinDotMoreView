@@ -3,6 +3,7 @@ package ui.anwesome.com.dotmoreview
 /**
  * Created by anweshmishra on 04/02/18.
  */
+import android.app.Activity
 import android.view.*
 import android.content.*
 import android.graphics.*
@@ -21,7 +22,7 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
     }
     override fun onDraw(canvas:Canvas) {
         canvas.drawColor(Color.parseColor("#212121"))
-        renderer.render(canvas,paint,)
+        renderer.render(canvas,paint)
     }
     data class Dot(var i:Int) {
         val dotState = DotState()
@@ -147,6 +148,13 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
             container?.startUpdating {
                 animator.start()
             }
+        }
+    }
+    companion object {
+        fun create(activity:Activity):DotMoreView {
+            val view = DotMoreView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
