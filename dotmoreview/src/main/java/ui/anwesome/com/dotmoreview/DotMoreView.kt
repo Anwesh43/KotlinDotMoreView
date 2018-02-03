@@ -20,14 +20,15 @@ class DotMoreView(ctx:Context):View(ctx) {
 
     }
     data class Dot(var i:Int) {
+        val dotState = DotState()
         fun draw(canvas:Canvas, paint:Paint, gap:Float,y:Float) {
-            canvas.drawCircle((i-1)*gap+gap,y,gap/5,paint)
+            canvas.drawCircle((i-1)*gap+gap*dotState.scale,y,gap/5,paint)
         }
         fun update(stopcb:(Float)->Unit) {
-
+            dotState.update(stopcb)
         }
-        fun startUpdating(startcb:(Float)->Unit) {
-
+        fun startUpdating(startcb:()->Unit) {
+            dotState.startUpdating(startcb)
         }
     }
     data class DotState(var scale:Float = 0f,var dir:Float = 0f,var prevScale:Float = 0f) {
