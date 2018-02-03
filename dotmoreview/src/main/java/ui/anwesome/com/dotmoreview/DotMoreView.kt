@@ -124,6 +124,29 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
             }
         }
     }
+    data class Renderer(var view:DotMoreView,var time:Int = 0) {
+        val animator = Animator(view)
+        var container:DotContainer ?= null
+        fun render(canvas:Canvas,paint:Paint) {
+            if(time == 0) {
+                val w = canvas.width.toFloat()
+                val h = canvas.height.toFloat()
+                container = DotContainer(w,h,view.n)
+            }
+            container?.draw(canvas,paint)
+            time++
+            animator?.animate {
+                container?.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            container?.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
 fun ConcurrentLinkedQueue<DotMoreView.Dot>.at(i:Int):DotMoreView.Dot? {
     var j = 0
