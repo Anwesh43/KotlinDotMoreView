@@ -19,4 +19,15 @@ class DotMoreView(ctx:Context):View(ctx) {
     override fun onDraw(canvas:Canvas) {
 
     }
+    data class Dot(var i:Int) {
+        fun draw(canvas:Canvas, paint:Paint, gap:Float,y:Float) {
+            canvas.drawCircle(i*gap+gap,y,gap/5,paint)
+        }
+        fun update(stopcb:(Float)->Unit) {
+
+        }
+        fun startUpdating(startcb:(Float)->Unit) {
+
+        }
+    }
 }
