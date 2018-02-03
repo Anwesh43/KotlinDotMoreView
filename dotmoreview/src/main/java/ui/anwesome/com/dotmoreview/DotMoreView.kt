@@ -48,4 +48,16 @@ class DotMoreView(ctx:Context):View(ctx) {
             }
         }
     }
+    data class DotContainerState(var n:Int,var j:Int = 0,var jDir:Int = 1) {
+        fun incrementCounter() {
+            j += jDir
+            if(j == n || j == -1) {
+                jDir *= -1
+                j += jDir
+            }
+        }
+        fun executeCb(cb:(Int)->Unit) {
+            cb(j)
+        }
+    }
 }
