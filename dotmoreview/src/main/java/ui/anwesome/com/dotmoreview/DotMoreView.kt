@@ -62,7 +62,9 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
             }
         }
         fun executeCb(cb:(Int)->Unit) {
-            cb(j)
+            if(j < n) {
+                cb(j)
+            }
         }
     }
     data class DotContainer(var w:Float,var h:Float,var n:Int) {
@@ -103,6 +105,17 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
                     canvas.restore()
                 }
                 canvas.restore()
+                paint.color = Color.parseColor("#FF9800")
+                state.executeCb { j ->
+                    val gap = 360/n
+                    val scale = dots?.at(j)?.dotState?.scale?:0f
+                    for (i in 0..1) {
+                        canvas.save()
+                        canvas.translate(w / 2, h / 5 + 3 * h / 5 *i)
+                        canvas.drawArc(RectF(-w/15,-w/15,w/15,w/15),0f,gap*j + gap*scale,true,paint)
+                        canvas.restore()
+                    }
+                }
             }
         }
     }
