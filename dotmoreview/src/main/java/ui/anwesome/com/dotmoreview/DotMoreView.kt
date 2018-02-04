@@ -105,16 +105,29 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
                     canvas.restore()
                 }
                 canvas.restore()
-                paint.color = Color.parseColor("#FF9800")
                 state.executeCb { j ->
                     val gap = 360/n
+                    val x_gap = w/(2*n)
                     val scale = dots?.at(j)?.dotState?.scale?:0f
                     for (i in 0..1) {
+                        paint.color = Color.parseColor("#FF9800")
                         canvas.save()
                         canvas.translate(w / 2, h / 5 + 3 * h / 5 *i)
                         canvas.drawArc(RectF(-w/15,-w/15,w/15,w/15),0f,gap*j + gap*scale,true,paint)
                         canvas.restore()
-                    }
+                        paint.strokeWidth = h/40
+                        paint.color = Color.parseColor("#3F51B5")
+                        paint.strokeCap = Paint.Cap.ROUND
+                        canvas.save()
+                        canvas.translate(w/2,h/30+(9*h/10)*i)
+                        for(p in 0..1) {
+                            canvas.save()
+                            canvas.scale(p * 2 - 1f, 1f)
+                            canvas.drawLine(-w / 2, 0f, -w / 2 + x_gap * j + x_gap * scale, 0f, paint)
+                            canvas.restore()
+                        }
+                    canvas.restore()
+                }
                 }
             }
         }
