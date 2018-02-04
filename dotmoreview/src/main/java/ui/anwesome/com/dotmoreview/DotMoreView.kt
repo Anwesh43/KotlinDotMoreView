@@ -12,6 +12,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     val renderer = Renderer(this)
+    var dotMoreListener:DotMoreListener?=null
+    fun addDotMoreListener(onExpandListener:()->Unit, onCollapseListener:()->Unit) {
+        dotMoreListener = DotMoreListener(onExpandListener, onCollapseListener)
+    }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -170,6 +174,10 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
             animator?.animate {
                 container?.update {
                     animator.stop()
+                    when(it) {
+                        0f -> view.dotMoreListener?.onCollapseListener?.invoke()
+                        1f -> view.dotMoreListener?.onExpandListener?.invoke()
+                    }
                 }
             }
         }
@@ -186,6 +194,7 @@ class DotMoreView(ctx:Context,var n:Int = 5):View(ctx) {
             return view
         }
     }
+    data class DotMoreListener(var onExpandListener:()->Unit,var onCollapseListener:()->Unit)
 }
 fun ConcurrentLinkedQueue<DotMoreView.Dot>.at(i:Int):DotMoreView.Dot? {
     var j = 0
